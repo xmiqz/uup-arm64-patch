@@ -24,12 +24,14 @@
 2. 把整个 `uup-arm64-patch` 文件夹复制到解压目录中
    （与 `uup_download_windows.cmd` 同级）
 3. 运行：
-   - **离线版**：双击 `uup-arm64-patch.cmd`（自带全部 ARM64 工具，无需联网）
+   - **离线版**：双击 `uup-arm64-patch.cmd`（自带全部 ARM64 工具及预补丁的
+     转换器包，无需联网）
    - **在线版**：双击 `uup-arm64-patch-online.cmd`（联网下载最新版工具后打补丁）
 4. 照常运行 `uup_download_windows.cmd`，流程与官方完全一致
 
-> 注意：全新解压的包里 `files\uup-converter-wimlib.7z` 要等下载脚本首次运行后才存在。
-> 建议先跑一次下载脚本，完成后再运行本工具；或者下载完成后运行。
+> 两个版本都支持**全新解压、从未运行过下载脚本**的包：离线版从自带的
+> 预补丁副本恢复缺失的 `files\7zr.exe` 与 `files\uup-converter-wimlib.7z`；
+> 在线版则直接从 uupdump.net 获取。先打补丁、后跑下载脚本即可。
 
 ## 工具做了什么
 
