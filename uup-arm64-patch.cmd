@@ -81,8 +81,11 @@ if exist "%TARGET%bin\wimlib-imagex.exe" (
         call :PATCHBIN
     )
 ) else (
-    echo [i] bin\ not extracted yet - archive patch above is enough;
-    echo     the converter will extract native ARM64 tools itself.
+    echo [i] bin\ not extracted yet.
+    echo     If the archive was patched above, the converter will
+    echo     extract native ARM64 tools by itself.
+    echo     If the archive patch was skipped, re-run this tool
+    echo     after the download script has created it.
 )
 echo.
 
