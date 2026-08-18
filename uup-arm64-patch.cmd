@@ -54,6 +54,17 @@ set "WIMRUN="
 tasklist /FI "IMAGENAME eq wimlib-imagex.exe" 2>nul | find /I "wimlib-imagex.exe" >nul && set "WIMRUN=1"
 
 rem ---- locate a working 7z tool (x86 build is fine for patching) ----
+rem ---- fresh package: restore missing prerequisites from bundled copy ----
+if not exist "%TARGET%files\7zr.exe" if exist "%RES%\7zr.exe" (
+    mkdir "%TARGET%files" 2>nul
+    copy /Y "%RES%\7zr.exe" "%TARGET%files\7zr.exe" >nul
+    echo [i] files\7zr.exe restored from bundled copy
+)
+if not exist "%TARGET%files\uup-converter-wimlib.7z" if exist "%RES%\uup-converter-wimlib.7z" (
+    mkdir "%TARGET%files" 2>nul
+    copy /Y "%RES%\uup-converter-wimlib.7z" "%TARGET%files\uup-converter-wimlib.7z" >nul
+    echo [i] converter archive restored from bundled copy ^(pre-patched^)
+)
 set "SZ="
 if exist "%TARGET%files\7zr.exe" set "SZ=%TARGET%files\7zr.exe"
 if not defined SZ if exist "%TARGET%bin\7z.exe" set "SZ=%TARGET%bin\7z.exe"
