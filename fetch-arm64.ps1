@@ -24,6 +24,39 @@ function Get-SevenZ {
     return $null
 }
 
+function Find-Target {
+    # locate the UUP dump package root (tool folder inside it, or tool files at root)
+    $cands = @(("$PSScriptRoot").TrimEnd('\'), (Split-Path $PSScriptRoot -Parent))
+    foreach ($r in $cands) {
+        if ((Test-Path "$r\uup_download_windows.cmd") -or
+            (Test-Path "$r\convert-UUP.cmd") -or
+            (Test-Path "$r\files")) { return $r }
+    }
+    return $null
+}
+
+# ---------- step 0: package prerequisites (fresh packages lack these) ----------
+$target = Find-Target
+if ($target) {
+    if (-not (Test-Path "$target\files\7zr.exe")) {
+        Write-Host '[0/3] Fetching 7zr.exe (uupdump.net)...'
+        New-Item -ItemType Directory -Force -Path "$target\files" | Out-Null
+        try {
+            Invoke-WebRequest -Uri 'https://uupdump.net/misc/7zr.exe' -OutFile "$target\files\7zr.exe" -UseBasicParsing
+            Write-Host '      7zr.exe OK'
+        } catch { Write-Host "      failed: $($_.Exception.Message)" }
+    }
+    if (-not (Test-Path "$target\files\uup-converter-wimlib.7z")) {
+        Write-Host '[0/3] Fetching UUP converter archive (uupdump.net)...'
+        try {
+            Invoke-WebRequest -Uri 'https://uupdump.net/misc/uup-converter-wimlib-v125.7z' -OutFile "$target\files\uup-converter-wimlib.7z" -UseBasicParsing
+            Write-Host '      converter archive OK'
+        } catch { Write-Host "      failed: $($_.Exception.Message)" }
+    }
+} else {
+    Write-Host '[0/3] UUP package root not found - run inside a package folder'
+}
+
 # ---------- wimlib ----------
 if (-not (Test-Path "$res\wimlib-imagex.exe") -or -not (Test-Path "$res\libwim-15.dll")) {
     Write-Host '[1/3] Downloading wimlib 1.14.4 (official ARM64 build)...'
